@@ -2,7 +2,9 @@
  * API service - handles all HTTP requests to the backend.
  * Wraps fetch calls with proper error handling and session management.
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Use relative URL in production (same origin), absolute URL in development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3000/api');
 
 class ApiService {
   constructor() {
