@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Creepster&family=Bungee+Shade&family=Rubik:wght@400;500;600&display=swap');
+
+/* Domino Tile - Vintage Retro Theme */
+.domino-tile-container {
+  margin: 3px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.domino-tile-container:hover {
+  transform: translateY(-5px);
+}
+
+.domino-tile-container.selected {
+  transform: translateY(-10px) scale(1.1);
+  z-index: 10;
+}
+
+/* Smaller tiles in player hand */
+.domino-tile-container.player-hand-tile {
+  transform: scale(0.65);
+  transform-origin: center;
+}
+
+.domino-tile-container.player-hand-tile.selected {
+  transform: translateY(-8px) scale(0.75);
+  z-index: 10;
+}
+
+.domino-tile-container.player-hand-tile:hover {
+  transform: translateY(-3px) scale(0.68);
+}
+
+.domino-svg {
+  filter: drop-shadow(0 2px 4px rgba(44, 24, 16, 0.3));
+}
+
+.domino-background {
+  fill: #fffef7;
+  stroke: none;
+}
+
+.domino-border {
+  stroke: #2c1810;
+  stroke-width: 3;
+}
+
+.domino-tile-container.selected .domino-border {
+  stroke: #8b4513;
+  stroke-width: 4;
+}
+
+.domino-divider {
+  stroke: #8b4513;
+  stroke-width: 2;
+}
+
+.domino-dot {
+  fill: #2c1810;
+}
+
+/* Disabled state */
+.domino-tile-container.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.domino-tile-container.disabled:hover {
+  transform: none;
+  filter: none;
+}
