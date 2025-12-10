@@ -2,7 +2,8 @@
  * Game handler - handles real-time game events like playing tiles, drawing, passing.
  * Also manages when players leave or disconnect during a game.
  */
-const activeGames = new Map(); // Map gameId -> { player1SocketId, player2SocketId }
+const activeGames = new Map(); // Map gameId -> { player1SocketId, player2SocketId, player1Id, player2Id }
+const disconnectTimeouts = new Map(); // Map `${gameId}-${playerId}` -> timeout
 
 module.exports = (io, supabase) => {
   io.on('connection', (socket) => {
@@ -17,11 +18,28 @@ module.exports = (io, supabase) => {
       }
       const game = activeGames.get(gameId);
       
+      // Check if this player is reconnecting (same player ID, different socket)
+      const timeoutKey = `${gameId}-${playerId}`;
+      if (disconnectTimeouts.has(timeoutKey)) {
+        // Player reconnected - cancel the disconnect timeout
+        clearTimeout(disconnectTimeouts.get(timeoutKey));
+        disconnectTimeouts.delete(timeoutKey);
+        console.log(`Player ${playerId} reconnected to game ${gameId}`);
+      }
+      
       // Store socket IDs for both players
-      if (!game.player1SocketId) {
+      if (game.player1Id === playerId) {
+        // Player 1 reconnecting - update socket ID
+        game.player1SocketId = socket.id;
+      } else if (game.player2Id === playerId) {
+        // Player 2 reconnecting - update socket ID
+        game.player2SocketId = socket.id;
+      } else if (!game.player1SocketId) {
+        // New player 1
         game.player1SocketId = socket.id;
         game.player1Id = playerId;
       } else if (!game.player2SocketId) {
+        // New player 2
         game.player2SocketId = socket.id;
         game.player2Id = playerId;
       }
@@ -153,6 +171,15 @@ module.exports = (io, supabase) => {
                               game.player2SocketId === socket.id ? player2Id : null;
       const remainingPlayerId = leavingPlayerId === player1Id ? player2Id : player1Id;
 
+      // Clear any pending disconnect timeout for this player
+      if (leavingPlayerId) {
+        const timeoutKey = `${gameId}-${leavingPlayerId}`;
+        if (disconnectTimeouts.has(timeoutKey)) {
+          clearTimeout(disconnectTimeouts.get(timeoutKey));
+          disconnectTimeouts.delete(timeoutKey);
+        }
+      }
+
       // End the game with remaining player as winner
       try {
         const { error } = await supabase
@@ -187,27 +214,70 @@ module.exports = (io, supabase) => {
 
     // Handle disconnect
     socket.on('disconnect', () => {
-      // Find and clean up games this player was in
+      // Find games this player was in
       for (const [gameId, game] of activeGames.entries()) {
-        if (game.player1SocketId === socket.id || game.player2SocketId === socket.id) {
-          const player1Id = game.player1Id;
-          const player2Id = game.player2Id;
+        let disconnectedPlayerId = null;
+        
+        if (game.player1SocketId === socket.id) {
+          disconnectedPlayerId = game.player1Id;
+          // Clear socket ID but keep player ID (they might reconnect)
+          game.player1SocketId = null;
+        } else if (game.player2SocketId === socket.id) {
+          disconnectedPlayerId = game.player2Id;
+          // Clear socket ID but keep player ID (they might reconnect)
+          game.player2SocketId = null;
+        }
+        
+        if (disconnectedPlayerId) {
+          const timeoutKey = `${gameId}-${disconnectedPlayerId}`;
           
-          // Notify other player
-          socket.to(gameId).emit('opponent-disconnected');
+          // Set a timeout to end the game if player doesn't reconnect
+          const timeout = setTimeout(async () => {
+            // Player didn't reconnect - end the game
+            const currentGame = activeGames.get(gameId);
+            if (!currentGame) {
+              return; // Game already cleaned up
+            }
+            
+            const player1Id = currentGame.player1Id;
+            const player2Id = currentGame.player2Id;
+            const remainingPlayerId = disconnectedPlayerId === player1Id ? player2Id : player1Id;
+            
+            // End the game in database
+            try {
+              const { error } = await supabase
+                .from('Games')
+                .update({ 
+                  status: 'completed',
+                  winner_id: remainingPlayerId
+                })
+                .eq('game_uuid', gameId);
+              
+              if (error) {
+                console.error('❌ Failed to end game on disconnect timeout:', error);
+              }
+            } catch (error) {
+              console.error('❌ Error ending game on disconnect:', error);
+            }
+            
+            // Notify remaining player
+            io.to(gameId).emit('opponent-disconnected');
+            
+            // Clean up game
+            activeGames.delete(gameId);
+            disconnectTimeouts.delete(timeoutKey);
+            
+            // Notify all users that these players are now available
+            if (player1Id) {
+              io.emit('user-available', { userId: player1Id });
+            }
+            if (player2Id) {
+              io.emit('user-available', { userId: player2Id });
+            }
+          }, 15000); // 15 second timeout
           
-          // Clean up game
-          activeGames.delete(gameId);
-          
-          // Notify all users that these players are now available
-          if (player1Id) {
-            io.emit('user-available', { userId: player1Id });
-          }
-          if (player2Id) {
-            io.emit('user-available', { userId: player2Id });
-          }
-          
-          // Could optionally end the game or mark it as abandoned here
+          disconnectTimeouts.set(timeoutKey, timeout);
+          console.log(`Player ${disconnectedPlayerId} disconnected from game ${gameId}, waiting for reconnect...`);
         }
       }
     });

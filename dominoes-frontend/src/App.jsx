@@ -32,7 +32,23 @@ function App() {
     try {
       const response = await apiService.getCurrentUser();
       setUser(response.user);
-      setCurrentView('lobby');
+      
+      // Check if user has an active game
+      try {
+        const activeGameResponse = await apiService.getActiveGame();
+        if (activeGameResponse.game) {
+          // User has an active game - resume it
+          setCurrentGame(activeGameResponse.game);
+          setCurrentView('game');
+        } else {
+          // No active game - go to lobby
+          setCurrentView('lobby');
+        }
+      } catch (gameError) {
+        // If checking for active game fails, just go to lobby
+        console.error('Error checking for active game:', gameError);
+        setCurrentView('lobby');
+      }
     } catch (error) {
       console.log('User not authenticated');
       setCurrentView('login');

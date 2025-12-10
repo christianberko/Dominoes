@@ -113,6 +113,10 @@ class ApiService {
   }
 
   // Game endpoints
+  async getActiveGame() {
+    return this.request('/game/active');
+  }
+
   async getGameState(gameUuid) {
     return this.request(`/game/${gameUuid}`);
   }

@@ -70,6 +70,69 @@ router.post('/create', requireAuth, async (req, res) => {
 });
 
 // ============================================
+// GET ACTIVE GAME FOR CURRENT USER
+// ============================================
+router.get('/active', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    // Find active game where user is player1 or player2
+    const { data: game, error: gameError } = await req.app.locals.supabase
+      .from('Games')
+      .select('*')
+      .or(`player1_id.eq.${userId},player2_id.eq.${userId}`)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (gameError || !game) {
+      // No active game found - this is OK, not an error
+      return res.json({ game: null });
+    }
+
+    // Get player info from Users table
+    const { data: player1Data, error: p1Error } = await req.app.locals.supabase
+      .from('Users')
+      .select('userID, username, display_name')
+      .eq('userID', game.player1_id)
+      .single();
+
+    const { data: player2Data, error: p2Error } = await req.app.locals.supabase
+      .from('Users')
+      .select('userID, username, display_name')
+      .eq('userID', game.player2_id)
+      .single();
+
+    if (p1Error || p2Error || !player1Data || !player2Data) {
+      console.error('❌ Error fetching player data:', p1Error || p2Error);
+      return res.status(500).json({ error: 'Failed to load player data' });
+    }
+
+    // Format response to match game-start event structure
+    const gameData = {
+      gameId: game.game_uuid,
+      gameDbId: game.gameID,
+      player1: {
+        id: player1Data.userID,
+        username: player1Data.username,
+        displayName: player1Data.display_name || player1Data.username
+      },
+      player2: {
+        id: player2Data.userID,
+        username: player2Data.username,
+        displayName: player2Data.display_name || player2Data.username
+      }
+    };
+
+    res.json({ game: gameData });
+  } catch (error) {
+    console.error('❌ Get active game error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ============================================
 // LOAD GAME STATE
 // ============================================
 router.get('/:gameUuid', requireAuth, async (req, res) => {

@@ -8,6 +8,7 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
+const path = require('path');
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const { generateCsrfToken } = require('./utils/tokenGenerator');
@@ -27,7 +28,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: process.env.NODE_ENV === 'production' 
-      ? process.env.FRONTEND_URL 
+      ? true // Allow same origin in production
       : "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true
@@ -39,7 +40,7 @@ app.use(helmet());
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+    ? true // Allow same origin in production
     : "http://localhost:5173",
   credentials: true
 }));
@@ -95,6 +96,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Serve static files from React app in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../../dominoes-frontend/dist');
+  app.use(express.static(frontendPath));
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -104,9 +111,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// 404 handler - serve React app for non-API routes in production
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  if (process.env.NODE_ENV === 'production' && !req.path.startsWith('/api')) {
+    const frontendPath = path.join(__dirname, '../../dominoes-frontend/dist/index.html');
+    res.sendFile(frontendPath);
+  } else {
+    res.status(404).json({ error: 'Route not found' });
+  }
 });
 // Socket.IO Handlers
 require('./socket/lobbyChatHandler')(io);
