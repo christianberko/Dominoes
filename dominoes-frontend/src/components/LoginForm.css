@@ -1,0 +1,451 @@
+/* Retro Login Form Styles - 1970s-80s Game Room Aesthetic */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Creepster&family=Bungee+Shade&family=Rubik:wght@400;500;600&display=swap');
+
+.retro-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  
+  /* Warm vintage background with texture */
+  background: 
+    /* Noise/grain texture */
+    repeating-linear-gradient(
+      0deg,
+      rgba(139, 115, 85, 0.03) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(139, 115, 85, 0.03) 3px
+    ),
+    /* Wood grain effect */
+    repeating-linear-gradient(
+      90deg,
+      #d4a574 0px,
+      #c4965e 1px,
+      #d4a574 2px,
+      #c4965e 3px,
+      #d4a574 4px
+    ),
+    /* Base warm cream */
+    linear-gradient(135deg, #f5e6d3 0%, #e8d5b7 50%, #d4c4a8 100%);
+  
+  background-size: 100% 100%, 200px 100%, 100% 100%;
+  background-attachment: fixed;
+  
+  /* Aged paper texture overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(139, 115, 85, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(101, 67, 33, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 20%, rgba(184, 134, 11, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* Decorative Domino Tiles */
+.domino-decoration {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+
+.domino-left {
+  left: 5%;
+}
+
+.domino-right {
+  right: 5%;
+}
+
+.domino-tile-deco {
+  width: 120px;
+  height: 240px;
+  background: linear-gradient(to bottom, #fffef7 0%, #f5f4e8 100%);
+  border: 4px solid #2c1810;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px 10px;
+  box-shadow: 
+    0 8px 16px rgba(44, 24, 16, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.domino-divider {
+  width: 100%;
+  height: 3px;
+  background: #2c1810;
+  margin: 10px 0;
+}
+
+.domino-dots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 60px;
+  height: 60px;
+}
+
+.domino-dots .dot {
+  width: 12px;
+  height: 12px;
+  background: #2c1810;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Main Login Card */
+.retro-login-card {
+  background: 
+    /* Texture overlay */
+    repeating-linear-gradient(
+      45deg,
+      rgba(139, 115, 85, 0.05) 0px,
+      transparent 1px,
+      transparent 4px,
+      rgba(139, 115, 85, 0.05) 5px
+    ),
+    /* Felt texture */
+    linear-gradient(135deg, #d4c4a8 0%, #c4b498 100%);
+  
+  border: 6px solid #8b7355;
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  max-width: 450px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  box-shadow: 
+    0 12px 24px rgba(44, 24, 16, 0.4),
+    0 6px 12px rgba(44, 24, 16, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  
+  /* Aged paper effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 30% 40%, rgba(184, 134, 11, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(139, 115, 85, 0.08) 0%, transparent 50%);
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* Title Section */
+.retro-title-section {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.retro-title {
+  font-family: 'Fredoka One', 'Bungee Shade', 'Arial Black', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: #8b4513;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 
+    3px 3px 0px #654321,
+    5px 5px 0px rgba(44, 24, 16, 0.3),
+    0 0 10px rgba(139, 69, 19, 0.2);
+  transform: perspective(100px) rotateX(2deg);
+  line-height: 1.1;
+}
+
+.retro-tagline {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: #6b5b3d;
+  margin: 0;
+  letter-spacing: 0.1em;
+  text-shadow: 1px 1px 2px rgba(44, 24, 16, 0.2);
+}
+
+/* Form Styles */
+.retro-form {
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.retro-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.retro-label {
+  display: block;
+  font-family: 'Rubik', 'Arial', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #5a4a3a;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.retro-input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-family: 'Rubik', 'Arial', sans-serif;
+  font-size: 1rem;
+  color: #3a2a1a;
+  background: linear-gradient(to bottom, #fffef7 0%, #f5f4e8 100%);
+  border: 3px solid #8b7355;
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 2px 4px rgba(44, 24, 16, 0.2),
+    0 2px 4px rgba(44, 24, 16, 0.1);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.retro-input::placeholder {
+  color: #9b8b7a;
+  font-style: italic;
+}
+
+.retro-input:focus {
+  outline: none;
+  border-color: #b8860b;
+  background: #ffffff;
+  box-shadow: 
+    inset 0 2px 4px rgba(44, 24, 16, 0.1),
+    0 0 0 3px rgba(184, 134, 11, 0.2),
+    0 4px 8px rgba(44, 24, 16, 0.2);
+  transform: translateY(-1px);
+}
+
+.retro-input:invalid:not(:placeholder-shown) {
+  border-color: #8b4513;
+  background: #ffe4e1;
+}
+
+/* Buttons */
+.retro-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-family: 'Rubik', 'Arial', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  
+  /* 3D pressable effect */
+  box-shadow: 
+    0 4px 0 #654321,
+    0 6px 8px rgba(44, 24, 16, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.retro-btn:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #654321,
+    0 3px 4px rgba(44, 24, 16, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.retro-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.retro-btn-primary {
+  background: linear-gradient(to bottom, #d2691e 0%, #cd853f 50%, #a0522d 100%);
+  color: #fffef7;
+  text-shadow: 1px 1px 2px rgba(44, 24, 16, 0.5);
+  border: 2px solid #8b4513;
+}
+
+.retro-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(to bottom, #e67e22 0%, #d2691e 50%, #b8860b 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #654321,
+    0 8px 12px rgba(44, 24, 16, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.retro-btn-secondary {
+  background: linear-gradient(to bottom, #9b8b7a 0%, #8b7b6a 50%, #7b6b5a 100%);
+  color: #fffef7;
+  text-shadow: 1px 1px 2px rgba(44, 24, 16, 0.5);
+  border: 2px solid #6b5b4a;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.2rem;
+  text-transform: none;
+  letter-spacing: 0.05em;
+}
+
+.retro-btn-secondary:hover {
+  background: linear-gradient(to bottom, #ab9b8a 0%, #9b8b7a 50%, #8b7b6a 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #5a4a3a,
+    0 8px 12px rgba(44, 24, 16, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Error Message */
+.retro-error {
+  background: linear-gradient(to bottom, #ffe4e1 0%, #ffd7d4 100%);
+  border: 3px solid #8b4513;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #8b4513;
+  font-family: 'Rubik', 'Arial', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 
+    inset 0 2px 4px rgba(139, 69, 19, 0.2),
+    0 2px 4px rgba(44, 24, 16, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+/* Success Message */
+.retro-success {
+  background: linear-gradient(to bottom, #d4edda 0%, #c3e6cb 100%);
+  border: 3px solid #28a745;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #155724;
+  font-family: 'Rubik', 'Arial', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 
+    inset 0 2px 4px rgba(40, 167, 69, 0.2),
+    0 2px 4px rgba(44, 24, 16, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .retro-login-container {
+    padding: 1rem;
+  }
+  
+  .domino-decoration {
+    display: none;
+  }
+  
+  .retro-login-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .retro-title {
+    font-size: 2.5rem;
+    letter-spacing: 0.15em;
+  }
+  
+  .retro-tagline {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .retro-title {
+    font-size: 2rem;
+  }
+  
+  .retro-login-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .retro-input {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .retro-btn {
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+  }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.retro-login-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Subtle grain/noise effect */
+.retro-login-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 3px
+    );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+}
+
