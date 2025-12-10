@@ -70,6 +70,8 @@ Main parts:
 - **User status** - In-memory Map on backend, synced via Socket.IO events
 
 
-
+### Running locallly -> 
+- after running npm install in the root; cd in frontend and backend directories and run npm install
+- to run the app split the terminal and run npm run dev in both directories to start both the front and backend
 
 
